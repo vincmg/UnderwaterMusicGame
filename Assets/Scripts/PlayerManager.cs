@@ -8,8 +8,8 @@ public class PlayerManager : MonoBehaviour, IRhythm {
     private Dictionary<string, bool> inputState; 
     private AudioSource TESTbeatSyncSfxPlayer;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         inputState = new Dictionary<string, bool>();
         inputState.Add("left", true);
         inputState.Add("right", true);
@@ -17,17 +17,17 @@ public class PlayerManager : MonoBehaviour, IRhythm {
         inputState.Add("down", true);
 
         TESTbeatSyncSfxPlayer = GetComponent<AudioSource>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+    
+    // Update is called once per frame
+    void Update () {
         // check which keys are pressed down and set inputState
         // when OnSongBeat() is called, inputState will be read and appropriate forces and animations will play
         var keys = new List<string>(inputState.Keys);
         foreach (var keyName in keys) {
             inputState[keyName] = Input.GetKey(keyName);
         }
-	}
+    }
 
     public void OnSongBeat () {
         bool didAnyActions = false;
