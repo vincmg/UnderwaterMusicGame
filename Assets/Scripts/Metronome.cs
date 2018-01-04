@@ -16,7 +16,7 @@ public class Metronome : MonoBehaviour {
     void Start () {
         musicPlayer = FindObjectOfType(typeof(MusicPlayer)) as MusicPlayer;
         if (musicPlayer == null) {
-            Debug.Log("couldn't find music player");
+            Debug.LogError("couldn't find music player");
             // TODO: crash or something here
         }
         startedMusic = false;
@@ -29,7 +29,7 @@ public class Metronome : MonoBehaviour {
             var rhythmScript = obj.GetComponent(typeof(IRhythm)) as IRhythm;
             if (rhythmScript != null) {
                 rhythmObjects.Add(rhythmScript);
-                Debug.Log("added object");
+                Debug.Log("Metronome.rhythmObjects: added " + obj.name);
             }
         }
 
@@ -44,8 +44,8 @@ public class Metronome : MonoBehaviour {
             nextBeatTime = Time.fixedTime + interBeatTimeInSeconds;
         }
     }
-    void FixedUpdate () {
 
+    void FixedUpdate () {
         double currentTime = Time.fixedTime;
         if (currentTime > nextBeatTime) {
 
@@ -55,7 +55,7 @@ public class Metronome : MonoBehaviour {
     }
 
     void Beat () {
-        Debug.Log(string.Format("called beat at {0}", Time.fixedTime));
+        //Debug.Log(string.Format("called beat at {0}", Time.fixedTime));
         foreach (var obj in rhythmObjects) {
             obj.OnSongBeat();
         }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TestSphere : MonoBehaviour, IRhythm {
+public class SimplePulsing : MonoBehaviour, IRhythm {
     public float testPulseSizeLimit = 2;
 
     private Vector3 scaleLimit;
