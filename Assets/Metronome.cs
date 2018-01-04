@@ -4,13 +4,23 @@ using UnityEngine;
 
 public class Metronome : MonoBehaviour {
     public double bpm;
+    public MusicPlayer musicPlayer;
 
     private List<IRhythm> rhythmObjects;
     private double interBeatTimeInSeconds;
     private double nextBeatTime;   
 
+    private bool startedMusic;
+
     // Use this for initialization
     void Start () {
+        musicPlayer = FindObjectOfType(typeof(MusicPlayer)) as MusicPlayer;
+        if (musicPlayer == null) {
+            Debug.Log("couldn't find music player");
+            // TODO: crash or something here
+        }
+        startedMusic = false;
+
         rhythmObjects = new List<IRhythm>();
 
         // find all objects in scene that implement IRhythm
@@ -24,13 +34,21 @@ public class Metronome : MonoBehaviour {
         }
 
         interBeatTimeInSeconds = 60.0f / bpm;
-        nextBeatTime = Time.fixedTime;
+        nextBeatTime = Time.fixedTime + interBeatTimeInSeconds;
     }
     
-    // Update is called once per frame
+    void Update () {
+        if (!startedMusic) {
+            musicPlayer.StartMusic();
+            startedMusic = true;
+            nextBeatTime = Time.fixedTime + interBeatTimeInSeconds;
+        }
+    }
     void FixedUpdate () {
+
         double currentTime = Time.fixedTime;
         if (currentTime > nextBeatTime) {
+
             Beat();
             nextBeatTime += interBeatTimeInSeconds;
         }

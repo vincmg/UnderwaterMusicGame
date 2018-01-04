@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class TestSphere : MonoBehaviour, IRhythm {
-    private bool flip;
+    public float testPulseSizeLimit = 2;
+
+    private Vector3 scaleLimit;
+    private Vector3 scaleInterval;
+    private Vector3 startingScale;
 
     // Use this for initialization
     void Start () {
-        flip = false;
-        Debug.Log("testsphere: called Start()");
+        scaleLimit = new Vector3(testPulseSizeLimit, testPulseSizeLimit, testPulseSizeLimit);
+        scaleInterval = new Vector3(0.1f, 0.1f, 0.1f);
+        startingScale = transform.localScale;
     }
     
     // Update is called once per frame
@@ -17,12 +22,25 @@ public class TestSphere : MonoBehaviour, IRhythm {
     }
 
     public void OnSongBeat () {
-        if (flip) {
-            transform.Translate(Vector3.forward);
-        } else {
-            transform.Translate(Vector3.back);
-        }
+        StartCoroutine(Pulse());
+    }
 
-        flip = !flip;
+    private IEnumerator Pulse () {
+        yield return Expand ();
+        yield return Contract ();
+    }
+
+    private IEnumerator Expand () {
+        while (transform.localScale != scaleLimit) {
+            transform.localScale += scaleInterval;
+            yield return new WaitForSeconds(0.01F);
+        }
+    }
+
+    private IEnumerator Contract () {
+        while (transform.localScale != startingScale) {
+            transform.localScale -= scaleInterval;
+            yield return new WaitForSeconds(0.01F);
+        }
     }
 }
