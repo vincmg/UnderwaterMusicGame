@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IRhythm {
+public interface IRhythm
+{
     void OnSongBeat();
 }

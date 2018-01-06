@@ -2,7 +2,8 @@
 using System.Collections;
 
 [RequireComponent(typeof(AudioSource))]
-public class MusicPlayer : MonoBehaviour {
+public class MusicPlayer : MonoBehaviour
+{
     public float lengthInSeconds;
     public AudioClip[] clips = new AudioClip[2];
     public float volume = 1.0f;
@@ -15,27 +16,32 @@ public class MusicPlayer : MonoBehaviour {
     private AudioSource[] audioSources = new AudioSource[2];
     private bool running = false;
 
-    void Start() {
+    void Start()
+    {
         currentClipIndex = 0;
         currentVolume = volume;
 
         int i = 0;
-        while (i < 2) {
-            GameObject child = new GameObject("Player");
+        while (i < 2)
+        {
+            var child = new GameObject("Player");
             child.transform.parent = gameObject.transform;
             audioSources[i] = child.AddComponent<AudioSource>();
             i++;
         }
+
         nextEventTime = AudioSettings.dspTime;
         running = false;
     }
 
-    void Update() {
+    void Update()
+    {
         if (!running)
             return;
-        
+
         double time = AudioSettings.dspTime;
-        if (time + 1.0F > nextEventTime) {
+        if (time + 1.0F > nextEventTime)
+        {
             audioSources[flip].clip = clips[currentClipIndex];
             audioSources[flip].PlayScheduled(nextEventTime);
             Debug.Log("Scheduled source " + flip + " to start at time " + nextEventTime);
@@ -45,57 +51,72 @@ public class MusicPlayer : MonoBehaviour {
         }
     }
 
-    public void StartMusic() {
+    public void StartMusic()
+    {
         running = true;
         currentClipIndex = 0;
         nextEventTime = AudioSettings.dspTime;
     }
 
-    public void Stop() {
+    public void Stop()
+    {
         running = false;
-        foreach (var audioSource in audioSources) {
+        foreach (var audioSource in audioSources)
+        {
             audioSource.Stop();
         }
     }
 
-    public void FadeOut(float length, float interval = 0.05F) {
+    public void FadeOut(float length, float interval = 0.05F)
+    {
         StartCoroutine(FadeOutCoroutine(length, interval));
     }
 
-    public void FadeIn(float length, float interval = 0.05F) {
+    public void FadeIn(float length, float interval = 0.05F)
+    {
         StartCoroutine(FadeInCoroutine(length, interval));
     }
 
-    private void ResetVolume() {
-        foreach (var audioSource in audioSources) {
+    private void ResetVolume()
+    {
+        foreach (var audioSource in audioSources)
+        {
             audioSource.volume = volume;
         }
     }
 
-    private IEnumerator FadeOutCoroutine(float length, float interval = 0.05F) {
-        while (currentVolume > 0.0F) {
-            foreach (var audioSource in audioSources) {
+    private IEnumerator FadeOutCoroutine(float length, float interval = 0.05F)
+    {
+        while (currentVolume > 0.0F)
+        {
+            foreach (var audioSource in audioSources)
+            {
                 audioSource.volume -= interval;
             }
+
             currentVolume -= interval;
             yield return new WaitForSeconds(length * interval);
         }
     }
 
-    private IEnumerator FadeOutAndStopCoroutine(float length, float interval = 0.05F) {
+    private IEnumerator FadeOutAndStopCoroutine(float length, float interval = 0.05F)
+    {
         yield return FadeOutCoroutine(length, interval);
         Stop();
         ResetVolume();
     }
 
-    private IEnumerator FadeInCoroutine(float length, float interval = 0.05F) {
-        while (currentVolume < 1.0F) {
-            foreach (var audioSource in audioSources) {
+    private IEnumerator FadeInCoroutine(float length, float interval = 0.05F)
+    {
+        while (currentVolume < 1.0F)
+        {
+            foreach (var audioSource in audioSources)
+            {
                 audioSource.volume += interval;
             }
+
             currentVolume += interval;
             yield return new WaitForSeconds(length * interval);
         }
     }
-
 }
